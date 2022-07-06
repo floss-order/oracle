@@ -3,7 +3,7 @@ import { Flex, IconButton } from '@chakra-ui/react';
 import { FiMenu, FiHome, FiMinus, FiBox } from 'react-icons/fi';
 import NavItem from '../components/NavItem';
 
-function Sidebar() {
+function Sidebar({ projects }) {
     const [navSize, changeNavSize] = useState("large");
     return (
         <Flex
@@ -41,18 +41,17 @@ function Sidebar() {
                     active
                     to="/"
                 />
-                <NavItem
-                    navSize={navSize}
-                    icon={FiBox}
-                    title="Карбоновый след"
-                    to="/carbon"
-                />
-                <NavItem
-                    navSize={navSize}
-                    icon={FiMinus}
-                    title="Прочее"
-                    to="/smth"
-                />
+                {
+                    projects.map((project) => (
+                        <NavItem
+                            navSize={navSize}
+                            icon={FiBox}
+                            title={project.name}
+                            to={`/${project.slug}`}
+                        />
+                    ))
+
+                }
             </Flex>
         </Flex>
     );
