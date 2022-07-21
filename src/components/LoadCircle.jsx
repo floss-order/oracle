@@ -3,9 +3,7 @@ import { CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
 import { Box, Center, Heading } from '@chakra-ui/react';
 import { useNode } from '@craftjs/core';
 
-function LoadCircle({ title, load, minW, ...props }) {
-    // const { connectors: {connect, drag} } = useNode();
-
+const LoadCircle = React.forwardRef(({ title, load, minW, ...props }, ref) => {
     function changeColor(loadValue) {
         if (loadValue > 70) {
             return 'red.400';
@@ -18,7 +16,7 @@ function LoadCircle({ title, load, minW, ...props }) {
         }
     }
     return (
-        <Box bg='white' p={4} borderWidth='1px' borderRadius='lg' minW={minW} {...props}>
+        <Box bg='white' p={4} borderWidth='1px' borderRadius='lg' minW={minW} ref={ref} {...props}>
             <Heading color="gray.400" as='h3' size='md'>{title}</Heading>
             <Center>
                 <CircularProgress
@@ -26,13 +24,12 @@ function LoadCircle({ title, load, minW, ...props }) {
                     value={load}
                     color={() => changeColor(load)}
                     size='180px'
-                    thickness='8px'
-                >
+                    thickness='8px'>
                     <CircularProgressLabel>{load}%</CircularProgressLabel>
                 </CircularProgress>
             </Center>
         </Box>
     )
-}
+})
 
 export default LoadCircle
