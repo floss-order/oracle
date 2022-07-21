@@ -1,12 +1,16 @@
 import React from "react";
 import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
+import { useEditor } from "@craftjs/core";
 import ToolboxItem from "./ToolboxItem";
 import LoadCircle from "./LoadCircle";
 import InfoCard from './InfoCard';
 import SearchBox from "./SearchBox";
 import Chart from "./Chart";
+import ULoadCircle from "./user/ULoadCircle";
+import SettingsPanel from "./SettingsPanel";
 
 function Toolbox() {
+    const { connectors, query } = useEditor();
     return (
         <Box maxH="3xl" w="xl" bg="white" p={6} overflowY="scroll" overflowX="hidden">
             <Heading size="md">Компоненты</Heading>
@@ -15,12 +19,13 @@ function Toolbox() {
                     <Chart />
                 </ToolboxItem>
                 <ToolboxItem title="Показатели">
-                    <LoadCircle title="Нагрузка" load={40} minW="100%" />
+                    <LoadCircle title="Нагрузка" load={40} minW="100%" ref={ref => connectors.create(ref, <ULoadCircle title="Нагрузка" load={40} />)} />
                     <InfoCard title="Карточка" value={4000} minW="100%" />
                 </ToolboxItem>
                 <ToolboxItem title="Прочее">
                     <SearchBox />
                 </ToolboxItem>
+                <SettingsPanel />
             </Stack>
         </Box>
     );
