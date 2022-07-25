@@ -6,8 +6,11 @@ import LoadCircle from "./LoadCircle";
 import InfoCard from './InfoCard';
 import SearchBox from "./SearchBox";
 import Chart from "./Chart";
+import UChart from "./user/UChart";
 import ULoadCircle from "./user/ULoadCircle";
 import SettingsPanel from "./SettingsPanel";
+import UInfoCard from "./user/UInfoCard";
+import data from './data.json';
 
 function Toolbox() {
     const { connectors, query } = useEditor();
@@ -16,11 +19,11 @@ function Toolbox() {
             <Heading size="md">Компоненты</Heading>
             <Stack spacing={4}>
                 <ToolboxItem title="Графики">
-                    <Chart />
+                    <Chart data={data} ref={ref => connectors.create(ref, <UChart />)} />
                 </ToolboxItem>
                 <ToolboxItem title="Показатели">
-                    <LoadCircle title="Нагрузка" load={40} minW="100%" ref={ref => connectors.create(ref, <ULoadCircle title="Нагрузка" load={40} />)} />
-                    <InfoCard title="Карточка" value={4000} minW="100%" />
+                    <LoadCircle title="Нагрузка" load={40} minW="100%" ref={ref => connectors.create(ref, <ULoadCircle />)} />
+                    <InfoCard title="Карточка" value={4000} minW="100%" ref={ref => connectors.create(ref, <UInfoCard title="Карточка" value={3000} />)} />
                 </ToolboxItem>
                 <ToolboxItem title="Прочее">
                     <SearchBox />
