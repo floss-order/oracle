@@ -19,7 +19,7 @@ function Toolbox() {
             <Heading size="md">Компоненты</Heading>
             <Stack spacing={4}>
                 <ToolboxItem title="Графики">
-                    <Chart data={data} ref={ref => connectors.create(ref, <UChart />)} />
+                    <Chart data={data} dataKeys={['n2o', 'co2', 'ch4', 'h2o', 'nh3']} ref={ref => connectors.create(ref, <UChart />)} />
                 </ToolboxItem>
                 <ToolboxItem title="Показатели">
                     <LoadCircle title="Нагрузка" load={40} minW="100%" ref={ref => connectors.create(ref, <ULoadCircle />)} />
