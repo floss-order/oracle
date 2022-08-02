@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { Button, CheckboxGroup, Checkbox, Stack, Heading, Input, FormControl, FormLabel, FormErrorMessage, HStack, Box, Text, Select } from '@chakra-ui/react';
 import Tree from '../Tree';
 import Toggle from '../Toggle';
+import { useForm } from 'react-hook-form';
 
 //http://192.168.2.201:8001/api/v1/data
 
@@ -37,22 +38,37 @@ function UChartSettings() {
     }));
     const [keys, setKeys] = useState(dataKeys);
     const [userDataKeys, setUserDataKeys] = useState([]);
+    const [apiURL, setApiURL] = useState('');
 
-    const apiInputRef = useRef();
     const { isFetching, data, error, refetch } = useQuery('deviceData', getDeviceData, {
         refetchOnWindowFocus: false,
         enabled: false,
         keepPreviousData: false
-    })
+    });
+
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+    } = useForm({
+        mode: "onBlur",
+    });
+
+    const {
+        register: register2,
+        formState: { errors: errors2 },
+        handleSubmit: handleSubmit2,
+    } = useForm({
+        mode: "onBlur",
+    });
 
     function getDeviceData() {
-        return fetch(apiInputRef.current.value).then(res => res.json());
+        return fetch(apiURL).then(res => res.json());
     }
 
-    function handleSubmit(e) {
-        e.preventDefault();
+    function onApiURLSubmit(input) {
+        setApiURL(input.apiURL);
         refetch();
-        console.log(data);
     };
 
     function handleChange(e) {
@@ -71,11 +87,15 @@ function UChartSettings() {
 
     return (
         <Stack spacing={4}>
-            <form onSubmit={handleSubmit}>
-                <FormControl isInvalid={error}>
+            <form onSubmit={handleSubmit(onApiURLSubmit)}>
+                <FormControl isRequired isInvalid={error}>
                     <FormLabel>API url</FormLabel>
                     <HStack>
-                        <Input isRequired type="text" placeholder="Введите url сервера для получения данных" ref={apiInputRef} />
+                        <Input
+                            type="text"
+                            placeholder="Введите url сервера для получения данных"
+                            {...register("apiURL", { required: true })}
+                        />
                         <Button isLoading={isFetching} type="submit">Сохранить</Button>
                     </HStack>
                     {error &&
