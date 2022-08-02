@@ -79,36 +79,38 @@ function UChartSettings() {
                         <Button isLoading={isFetching} type="submit">Сохранить</Button>
                     </HStack>
                     {error &&
-                        <FormErrorMessage>Произошла ошибка: {error.message}</FormErrorMessage>
+                        <FormErrorMessage>
+                            Произошла ошибка: {error.message}
+                        </FormErrorMessage>
                     }
-                    <Box mt={4}>
-                        {data &&
-                            <>
-                                <Heading size="md">Данные</Heading>
-                                <Box mt={4}>
-                                    <HStack align="stretch">
-                                        <Box>
-                                            <Text mb={2} fontWeight="semibold">Y</Text>
-                                            <Tree onChange={handleDataKeysChange} data={data} />
-                                        </Box>
-                                        <Box>
-                                            <Text mb={2} fontWeight="semibold">X</Text>
-                                            <Select>
-                                                {
-                                                    Object.keys(data[0]).map((variable, index) => (
-                                                        <option value={variable} key={index}>{variable}</option>
-                                                    ))
-                                                }
-                                            </Select>
-                                        </Box>
-                                    </HStack>
-                                </Box>
-                                <Button mt={4} onClick={drawChart} colorScheme="blue">Построить график</Button>
-                            </>
-                        }
-                    </Box>
                 </FormControl>
             </form>
+            <Box mt={4}>
+                {data &&
+                    <form>
+                        <Heading size="md">Данные</Heading>
+                        <Box mt={4}>
+                            <HStack align="stretch">
+                                <FormControl>
+                                    <FormLabel>Y</FormLabel>
+                                    <Tree onChange={handleDataKeysChange} data={data} />
+                                </FormControl>
+                                <FormControl>
+                                    <FormLabel>X</FormLabel>
+                                    <Select>
+                                        {
+                                            Object.keys(data[0]).map((variable, index) => (
+                                                <option value={variable} key={index}>{variable}</option>
+                                            ))
+                                        }
+                                    </Select>
+                                </FormControl>
+                            </HStack>
+                        </Box>
+                        <Button mt={4} onClick={drawChart} colorScheme="blue">Построить график</Button>
+                    </form>
+                }
+            </Box>
             <CheckboxGroup colorScheme='green' onChange={handleChange} defaultValue={keys}>
                 <Heading size="sm">Оси y</Heading>
                 <Stack spacing={[1, 5]} direction={['column', 'row']}>
