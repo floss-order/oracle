@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import { Button, CheckboxGroup, Checkbox, Stack, Heading, Input, FormControl, FormLabel, FormErrorMessage, HStack, Box, Text, Select } from '@chakra-ui/react';
 import Tree from '../Tree';
 import Toggle from '../Toggle';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
 //http://192.168.2.201:8001/api/v1/data
 
@@ -58,6 +58,7 @@ function UChartSettings() {
         register: register2,
         formState: { errors: errors2 },
         handleSubmit: handleSubmit2,
+        control: control2
     } = useForm({
         mode: "onBlur",
     });
@@ -69,6 +70,10 @@ function UChartSettings() {
     function onApiURLSubmit(input) {
         setApiURL(input.apiURL);
         refetch();
+    };
+
+    function onChartSettingsSubmit(chartSettings) {
+        console.log(chartSettings);
     };
 
     function handleChange(e) {
@@ -107,13 +112,27 @@ function UChartSettings() {
             </form>
             <Box mt={4}>
                 {data &&
-                    <form>
+                    <form onSubmit={handleSubmit2(onChartSettingsSubmit)}>
                         <Heading size="md">Данные</Heading>
                         <Box mt={4}>
                             <HStack align="stretch">
                                 <FormControl>
                                     <FormLabel>Y</FormLabel>
-                                    <Tree onChange={handleDataKeysChange} data={data} />
+                                    <Controller
+                                        control={control2}
+                                        name="dataKeysY"
+                                        defaultValue={false}
+                                        render={({ field: { onChange, ref } }) => (
+                                            <CheckboxGroup ref={ref} onChange={onChange}>
+                                                <Stack>
+                                                    {
+                                                        Object.keys(data[0]).map((key, index) => (
+                                                            <Checkbox value={key} key={index}>{key}</Checkbox>
+                                                        ))
+                                                    }
+                                                </Stack>
+                                            </CheckboxGroup>)}
+                                    />
                                 </FormControl>
                                 <FormControl>
                                     <FormLabel>X</FormLabel>
@@ -127,7 +146,7 @@ function UChartSettings() {
                                 </FormControl>
                             </HStack>
                         </Box>
-                        <Button mt={4} onClick={drawChart} colorScheme="blue">Построить график</Button>
+                        <Button mt={4} type="submit" colorScheme="blue">Построить график</Button>
                     </form>
                 }
             </Box>
@@ -141,7 +160,7 @@ function UChartSettings() {
                     }
                 </Stack>
             </CheckboxGroup>
-        </Stack>
+        </Stack >
     );
 };
 
