@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Chart from '../Chart';
 import { useNode } from '@craftjs/core';
 import { useQuery } from 'react-query';
-import { Button, CheckboxGroup, Checkbox, Stack, Heading, Input, FormControl, FormLabel, FormErrorMessage, HStack, Box } from '@chakra-ui/react';
+import { Button, CheckboxGroup, Checkbox, Stack, Heading, Input, FormControl, FormLabel, FormErrorMessage, HStack, Box, Text, Select } from '@chakra-ui/react';
 import Tree from '../Tree';
 import Toggle from '../Toggle';
 
@@ -83,11 +83,28 @@ function UChartSettings() {
                     }
                     <Box mt={4}>
                         {data &&
-                            <Toggle>
-                                <Heading>Переменные Y</Heading>
-                                <Tree onChange={handleDataKeysChange} data={data} />
+                            <>
+                                <Heading size="md">Данные</Heading>
+                                <Box mt={4}>
+                                    <HStack align="stretch">
+                                        <Box>
+                                            <Text mb={2} fontWeight="semibold">Y</Text>
+                                            <Tree onChange={handleDataKeysChange} data={data} />
+                                        </Box>
+                                        <Box>
+                                            <Text mb={2} fontWeight="semibold">X</Text>
+                                            <Select>
+                                                {
+                                                    Object.keys(data[0]).map((variable, index) => (
+                                                        <option value={variable} key={index}>{variable}</option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        </Box>
+                                    </HStack>
+                                </Box>
                                 <Button mt={4} onClick={drawChart} colorScheme="blue">Построить график</Button>
-                            </Toggle>
+                            </>
                         }
                     </Box>
                 </FormControl>
