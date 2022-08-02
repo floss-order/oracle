@@ -28,7 +28,7 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/transactions/:transaction" element={<Transaction />} />
             {data.map((project, index) => (
-              <Route key={index} path={`/${project.slug}`} element={<Carbon apiURL={project.apiURL} />} />
+              <Route key={index} path={`/${project.slug}`} element={<Project name={project.name} />} />
             ))}
           </Routes>
         </Box>
