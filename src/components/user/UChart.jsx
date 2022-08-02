@@ -9,7 +9,7 @@ import { useForm, Controller } from 'react-hook-form';
 
 //http://192.168.2.201:8001/api/v1/data
 
-function UChart({ dataKeys }) {
+function UChart({ dataKeys, chartSettings }) {
     const { connectors: { connect, drag } } = useNode();
     const { isLoading, data, error } = useQuery('devices', () => fetch('http://localhost:3001/device').then(res =>
         res.json()
@@ -28,12 +28,12 @@ function UChart({ dataKeys }) {
     };
 
     return (
-        <Chart data={data} dataKeys={dataKeys} ref={ref => connect(drag(ref))} />
+        <Chart data={data} chartSettings={chartSettings} dataKeys={dataKeys} ref={ref => connect(drag(ref))} />
     );
 };
 
 function UChartSettings() {
-    const { dataKeys, actions: { setProp } } = useNode((node) => ({
+    const { dataKeys, chartSettings, actions: { setProp } } = useNode((node) => ({
         dataKeys: node.data.props.dataKeys
     }));
     const [keys, setKeys] = useState(dataKeys);
@@ -74,6 +74,7 @@ function UChartSettings() {
 
     function onChartSettingsSubmit(chartSettings) {
         console.log(chartSettings);
+        setProp((props) => props.chartSettings = chartSettings);
     };
 
     function handleChange(e) {
@@ -127,16 +128,23 @@ function UChartSettings() {
                                                 <Stack>
                                                     {
                                                         Object.keys(data[0]).map((key, index) => (
-                                                            <Checkbox value={key} key={index}>{key}</Checkbox>
+                                                            <Checkbox
+                                                                value={key}
+                                                                key={index}
+                                                            >
+                                                                {key}
+                                                            </Checkbox>
                                                         ))
                                                     }
                                                 </Stack>
                                             </CheckboxGroup>)}
                                     />
                                 </FormControl>
-                                <FormControl>
+                                <FormControl isRequired>
                                     <FormLabel>X</FormLabel>
-                                    <Select>
+                                    <Select
+                                        {...register2("datakeyX", { required: true })}
+                                    >
                                         {
                                             Object.keys(data[0]).map((variable, index) => (
                                                 <option value={variable} key={index}>{variable}</option>
@@ -146,7 +154,13 @@ function UChartSettings() {
                                 </FormControl>
                             </HStack>
                         </Box>
-                        <Button mt={4} type="submit" colorScheme="blue">Построить график</Button>
+                        <Button
+                            mt={4}
+                            type="submit"
+                            colorScheme="blue"
+                        >
+                            Построить график
+                        </Button>
                     </form>
                 }
             </Box>
