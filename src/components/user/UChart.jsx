@@ -6,6 +6,8 @@ import { Button, CheckboxGroup, Checkbox, Stack, Heading, Input, FormControl, Fo
 import Tree from '../Tree';
 import Toggle from '../Toggle';
 import { useForm, Controller } from 'react-hook-form';
+import * as transformers from '../../utils/transformers';
+import { transformersDescription } from '../../utils/transformers/transformersDescription'
 
 //http://192.168.2.201:8001/api/v1/data
 
@@ -34,7 +36,8 @@ function UChart({ dataKeys, chartSettings }) {
 
 function UChartSettings() {
     const { dataKeys, chartSettings, actions: { setProp } } = useNode((node) => ({
-        dataKeys: node.data.props.dataKeys
+        dataKeys: node.data.props.dataKeys,
+        chartSettings: node.data.props.chartSettings
     }));
     const [keys, setKeys] = useState(dataKeys);
     const [userDataKeys, setUserDataKeys] = useState([]);
@@ -47,7 +50,7 @@ function UChartSettings() {
     });
 
     useEffect(() => {
-        if(apiURL) refetch();
+        if (apiURL) refetch();
     }, [apiURL])
 
     const {
@@ -117,56 +120,74 @@ function UChartSettings() {
             <Box mt={4}>
                 {data &&
                     <form onSubmit={handleSubmit2(onChartSettingsSubmit)}>
-                        <Box mt={4}>
-                            <Heading size="md">Данные</Heading>
-                            <HStack align="stretch">
-                                <FormControl>
-                                    <FormLabel>Y</FormLabel>
-                                    <Controller
-                                        control={control2}
-                                        name="dataKeysY"
-                                        defaultValue={false}
-                                        render={({ field: { onChange, ref } }) => (
-                                            <CheckboxGroup ref={ref} onChange={onChange}>
-                                                <Stack>
-                                                    {
-                                                        Object.keys(data[0]).map((key, index) => (
-                                                            <Checkbox
-                                                                value={key}
-                                                                key={index}
-                                                            >
-                                                                {key}
-                                                            </Checkbox>
-                                                        ))
-                                                    }
-                                                </Stack>
-                                            </CheckboxGroup>)}
-                                    />
-                                </FormControl>
-                                <FormControl isRequired>
-                                    <FormLabel>X</FormLabel>
-                                    <Select
-                                        {...register2("datakeyX", { required: true })}
-                                    >
-                                        {
-                                            Object.keys(data[0]).map((variable, index) => (
-                                                <option value={variable} key={index}>{variable}</option>
-                                            ))
-                                        }
-                                    </Select>
-                                </FormControl>
-                            </HStack>
-                        </Box>
-                        <Box>
-                            <Heading size="md">Трансформации</Heading>
-                        </Box>
-                        <Button
-                            mt={4}
-                            type="submit"
-                            colorScheme="blue"
-                        >
-                            Построить график
-                        </Button>
+                        <Stack spacing={4}>
+                            <Box>
+                                <Heading size="md">Данные</Heading>
+                                <HStack align="stretch">
+                                    <FormControl>
+                                        <FormLabel>Y</FormLabel>
+                                        <Controller
+                                            control={control2}
+                                            name="dataKeysY"
+                                            defaultValue={false}
+                                            render={({ field: { onChange, ref } }) => (
+                                                <CheckboxGroup ref={ref} onChange={onChange}>
+                                                    <Stack>
+                                                        {
+                                                            Object.keys(data[0]).map((key, index) => (
+                                                                <Checkbox
+                                                                    value={key}
+                                                                    key={index}
+                                                                >
+                                                                    {key}
+                                                                </Checkbox>
+                                                            ))
+                                                        }
+                                                    </Stack>
+                                                </CheckboxGroup>)}
+                                        />
+                                    </FormControl>
+                                    <FormControl isRequired>
+                                        <FormLabel>X</FormLabel>
+                                        <Select
+                                            {...register2("datakeyX", { required: true })}
+                                        >
+                                            {
+                                                Object.keys(data[0]).map((variable, index) => (
+                                                    <option value={variable} key={index}>{variable}</option>
+                                                ))
+                                            }
+                                        </Select>
+                                    </FormControl>
+                                </HStack>
+                            </Box>
+                            <Box>
+                                <Heading size="md">Трансформации</Heading>
+                                <Controller
+                                    control={control2}
+                                    name="transformations"
+                                    defaultValue={false}
+                                    render={({ field: { onChange, ref } }) => (
+                                        <CheckboxGroup
+                                            onChange={onChange}
+                                        >
+                                            {
+                                                // chartSettings &&
+                                                Object.keys(transformers).map((transformer, index) => (
+                                                    <Checkbox value={transformer}>{transformersDescription[index][transformer]}</Checkbox>
+                                                ))
+                                            }
+                                        </CheckboxGroup>)}
+                                />
+                            </Box>
+                            <Button
+                                type="submit"
+                                colorScheme="blue"
+                                size="lg"
+                            >
+                                Построить график
+                            </Button>
+                        </Stack>
                     </form>
                 }
             </Box>
