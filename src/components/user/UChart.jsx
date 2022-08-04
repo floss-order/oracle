@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Chart from '../Chart';
 import { useNode } from '@craftjs/core';
 import { useQuery } from 'react-query';
@@ -46,6 +46,10 @@ function UChartSettings() {
         keepPreviousData: false
     });
 
+    useEffect(() => {
+        if(apiURL) refetch();
+    }, [apiURL])
+
     const {
         register,
         formState: { errors },
@@ -69,7 +73,6 @@ function UChartSettings() {
 
     function onApiURLSubmit(input) {
         setApiURL(input.apiURL);
-        refetch();
     };
 
     function onChartSettingsSubmit(chartSettings) {
@@ -114,8 +117,8 @@ function UChartSettings() {
             <Box mt={4}>
                 {data &&
                     <form onSubmit={handleSubmit2(onChartSettingsSubmit)}>
-                        <Heading size="md">Данные</Heading>
                         <Box mt={4}>
+                            <Heading size="md">Данные</Heading>
                             <HStack align="stretch">
                                 <FormControl>
                                     <FormLabel>Y</FormLabel>
@@ -153,6 +156,9 @@ function UChartSettings() {
                                     </Select>
                                 </FormControl>
                             </HStack>
+                        </Box>
+                        <Box>
+                            <Heading size="md">Трансформации</Heading>
                         </Box>
                         <Button
                             mt={4}
