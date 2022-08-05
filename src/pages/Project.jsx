@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Editor, Frame, Element, useNode } from "@craftjs/core";
+import { Editor, Frame, Element, useNode, useEditor } from "@craftjs/core";
 import { Box, Button, Flex, Heading, IconButton, Stack } from "@chakra-ui/react";
 import LoadCircle from "../components/LoadCircle";
 import InfoCard from "../components/InfoCard";
@@ -10,24 +10,47 @@ import UInfoCard from '../components/user/UInfoCard';
 import UChart from '../components/user/UChart';
 
 
+function EditorToggle() {
+  const { actions, enabled } = useEditor(
+    (state, query) => ({
+      enabled: state.options.enabled
+    })
+  );
+
+  function onToggle() {
+    actions.setOptions((options) => (options.enabled = !enabled))
+    console.log(enabled);
+  };
+
+  return (
+    <Button
+      pos="relative"
+      onClick={onToggle}
+      top={-2}
+      zIndex={1}
+      variant="link">
+      Изменить
+    </Button>
+  )
+};
+
 function Project({ name, components }) {
-  const [showEditor, setShowEditor] = useState(true);
   return (
     <>
-      <Editor resolver={{ Stack, Heading, Button, SearchBox, Box, LoadCircle, InfoCard, ULoadCircle, Toolbox, Flex, UInfoCard, UChart }}>
+      <Editor enabled={false} resolver={{ Stack, Heading, Button, SearchBox, Box, LoadCircle, InfoCard, ULoadCircle, Toolbox, Flex, UInfoCard, UChart, EditorToggle }}>
         <Frame>
           <Element is={Stack} direction="row" overflow="hidden">
             <Element is={Flex} flex={2} direction="column">
               <Element is={Stack} direction="row">
-                <Heading contentEditable={showEditor}>{name}</Heading>
-                <Button
-                  onClick={() => setShowEditor(!showEditor)}
+                <Heading>{name}</Heading>
+                {/* <Button
                   pos="relative"
                   top={-2}
                   zIndex={1}
                   variant="link">
                   Изменить
-                </Button>
+                </Button> */}
+                <EditorToggle />
               </Element>
               <Element is={Stack}>
                 <SearchBox />
@@ -38,15 +61,11 @@ function Project({ name, components }) {
                 </Element>
               </Element>
             </Element>
-            {
-              showEditor && (
                 <Element is={Stack} flex={1}>
                   <Stack pos="fixed">
                     <Toolbox />
                   </Stack>
                 </Element>
-              )
-            }
             {/*
               {
                 showEditor && (
