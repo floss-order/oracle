@@ -65,10 +65,15 @@ function UChartSettings() {
         register: register2,
         formState: { errors: errors2 },
         handleSubmit: handleSubmit2,
-        control: control2
+        control: control2,
+        watch: watch2
     } = useForm({
         mode: "onBlur",
     });
+
+    const datakeyX = watch2('datakeyX');
+    const datakeysY = watch2('datakeysY');
+    // console.log(datakeysY);
 
     function getDeviceData() {
         return fetch(apiURL).then(res => res.json());
@@ -128,7 +133,7 @@ function UChartSettings() {
                                         <FormLabel>Y</FormLabel>
                                         <Controller
                                             control={control2}
-                                            name="dataKeysY"
+                                            name="datakeysY"
                                             defaultValue={false}
                                             render={({ field: { onChange, ref } }) => (
                                                 <CheckboxGroup ref={ref} onChange={onChange}>
@@ -161,25 +166,37 @@ function UChartSettings() {
                                     </FormControl>
                                 </HStack>
                             </Box>
-                            <Box>
-                                <Heading size="md">Трансформации</Heading>
-                                <Controller
-                                    control={control2}
-                                    name="transformations"
-                                    defaultValue={false}
-                                    render={({ field: { onChange, ref } }) => (
-                                        <CheckboxGroup
-                                            onChange={onChange}
-                                        >
-                                            {
-                                                // chartSettings &&
-                                                Object.keys(transformers).map((transformer, index) => (
-                                                    <Checkbox value={transformer}>{transformersDescription[index][transformer]}</Checkbox>
-                                                ))
-                                            }
-                                        </CheckboxGroup>)}
-                                />
-                            </Box>
+                            {/* <Box>
+                                <Stack>
+                                    <Heading size="md">Трансформации</Heading>
+                                    {
+                                        Object.keys(transformers).map((transformer, index) => (
+                                            <Box>
+                                                <Heading size="sm">
+                                                    {transformersDescription[index][transformer]}
+                                                </Heading>
+                                                <Controller
+                                                    control={control2}
+                                                    name="transformations"
+                                                    defaultValue={false}
+                                                    render={({ field: { onChange, ref } }) => (
+                                                        <CheckboxGroup
+                                                            onChange={onChange}
+                                                        >
+                                                            {
+                                                                datakeysY &&
+                                                                datakeysY.map((datakeyY, index) => (
+                                                                    <Checkbox 
+                                                                    value={datakeyY}>{datakeyY}</Checkbox>
+                                                                ))
+                                                            }
+                                                        </CheckboxGroup>)}
+                                                />
+                                            </Box>
+                                        ))
+                                    }
+                                </Stack>
+                            </Box> */}
                             <Button
                                 type="submit"
                                 colorScheme="blue"
