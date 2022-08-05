@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import epochToDate from '../utils/epochToDate';
-import { maxNumber } from '../utils/maxNumber';
+import { epochToDate, maxNumber } from '../utils/transformers';
 
 const Chart = React.forwardRef(({ data, dataKeys, chartSettings }, ref) => {
     const [bottom, setBottom] = useState(1000);
     const [top, setTop] = useState(0);
 
     useEffect(() => {
-        if (Array.isArray(data)) {
-            setBottom(maxNumber(data, chartSettings.dataKeysY));
-        };
+        if(data && chartSettings) {
+            setBottom(maxNumber(data, chartSettings.datakeysY));
+        }
     }, [bottom, data, chartSettings, ref]);
 
     return (
@@ -28,7 +27,7 @@ const Chart = React.forwardRef(({ data, dataKeys, chartSettings }, ref) => {
                             minTickGap={40}
                         />
                         {
-                            chartSettings?.dataKeysY.map((dataKey, index) => (
+                            chartSettings?.datakeysY.map((dataKey, index) => (
                                 <Line type="monotone" dataKey={dataKey} stroke="#226408" yAxisId="1" key={index} />
                             ))
                         }
