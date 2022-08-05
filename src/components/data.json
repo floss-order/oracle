@@ -1,5 +1,6 @@
-[
 {
+    "device": [
+        {
             "frac_days_since_jan1": 312.91119664696043,
             "frac_hrs_since_jan1": 7509.868719535971,
             "julian_days": 313.91119664696043,
@@ -1092,3 +1093,4 @@
             "switch_sync": 0.0
         }
     ]
+}
