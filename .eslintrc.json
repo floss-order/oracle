@@ -5,7 +5,7 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "airbnb",
+        // "airbnb",
         "plugin:prettier/recommended"
     ],
     "parserOptions": {
@@ -19,5 +19,6 @@
         "react"
     ],
     "rules": {
+        "react/prop-types": "off"
     }
 }
