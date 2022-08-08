@@ -19,7 +19,6 @@ function EditorToggle() {
 
   function onToggle() {
     actions.setOptions((options) => (options.enabled = !enabled))
-    console.log(enabled);
   };
 
   return (

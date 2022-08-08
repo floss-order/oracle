@@ -22,17 +22,23 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 //   </React.StrictMode>
 // );
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 ReactDOM.render(
   // <React.StrictMode>
-    <Router>
-      <QueryClientProvider client={queryClient}>
-        <ChakraProvider>
-          <App />
-        </ChakraProvider>
-      </QueryClientProvider>
-    </Router>,
+  <Router>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider>
+        <App />
+      </ChakraProvider>
+    </QueryClientProvider>
+  </Router>,
   // </React.StrictMode>,
   document.getElementById('root')
 );
