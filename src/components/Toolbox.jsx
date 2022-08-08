@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Flex, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import { useEditor } from "@craftjs/core";
 import ToolboxItem from "./ToolboxItem";
 import LoadCircle from "./LoadCircle";
@@ -19,7 +19,7 @@ function Toolbox() {
 
     if(enabled) {
         return (
-            <Box maxH="3xl" w="xl" bg="white" p={6} overflowY="scroll" overflowX="hidden">
+            <Flex direction="column" maxH="3xl" w="xl" bg="white" p={6} overflowY="scroll" overflowX="hidden">
                 <Heading size="md">Компоненты</Heading>
                 <Stack spacing={4}>
                     <ToolboxItem title="Графики">
@@ -34,7 +34,7 @@ function Toolbox() {
                     </ToolboxItem>
                     <SettingsPanel />
                 </Stack>
-            </Box>
+            </Flex>
         );
     } else {
         return null;

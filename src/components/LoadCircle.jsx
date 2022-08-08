@@ -1,6 +1,6 @@
 import React from 'react';
 import { CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
-import { Box, Center, Heading } from '@chakra-ui/react';
+import { Flex, Center, Heading } from '@chakra-ui/react';
 import { useNode } from '@craftjs/core';
 
 const LoadCircle = React.forwardRef(({ title, load, minW, ...props }, ref) => {
@@ -16,7 +16,7 @@ const LoadCircle = React.forwardRef(({ title, load, minW, ...props }, ref) => {
         }
     }
     return (
-        <Box bg='white' p={4} borderWidth='1px' borderRadius='lg' minW={minW} ref={ref} {...props}>
+        <Flex direction="column" bg='white' p={4} borderWidth='1px' borderRadius='lg' minW={minW} ref={ref} {...props}>
             <Heading color="gray.400" as='h3' size='md'>{title}</Heading>
             <Center>
                 <CircularProgress
@@ -28,7 +28,7 @@ const LoadCircle = React.forwardRef(({ title, load, minW, ...props }, ref) => {
                     <CircularProgressLabel>{load}%</CircularProgressLabel>
                 </CircularProgress>
             </Center>
-        </Box>
+        </Flex>
     )
 })
 

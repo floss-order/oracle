@@ -20,7 +20,7 @@ function SearchBox() {
     }
 
     return (
-        <Box bg='white' p={4} borderWidth='1px' borderRadius='lg' overflow='hidden'>
+        <Flex direction="column" bg='white' p={4} borderWidth='1px' borderRadius='lg' overflow='hidden'>
             <form onSubmit={handleSubmit}>
                 <FormControl>
                     <FormLabel htmlFor="searchQuery">
@@ -47,7 +47,7 @@ function SearchBox() {
                     )}
                 </FormControl>
             </form>
-        </Box>
+        </Flex>
     );
 };
 

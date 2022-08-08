@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Box, Text } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import { FiExternalLink } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, IconButton, FormControl, FormLabel, Input, useDisclosure } from '@chakra-ui/react';
@@ -17,29 +17,29 @@ function BlockCard({ transNumber, type, source, date, time }) {
 
     return (
         <>
-            <Box bg='white' p={4} borderWidth='1px' borderRadius='lg' overflow='hidden' maxW="md">
+            <Flex direction="column" bg='white' p={4} borderWidth='1px' borderRadius='lg' overflow='hidden' maxW="md">
                 <IconButton onClick={onOpen} icon={<FiExternalLink />} />
-                <Box mt={4}>
+                <Flex direction="column" mt={4}>
                     <Text color="gray.400">номер транзакции</Text>
                     <Text fontWeight="semibold" fontSize='lg'>{transNumber}</Text>
-                </Box>
-                <Box mt={4}>
+                </Flex>
+                <Flex direction="column" mt={4}>
                     <Text color="gray.400">тип данных</Text>
                     <Text fontWeight="semibold" fontSize='lg'>{type}</Text>
-                </Box>
-                <Box mt={4}>
+                </Flex>
+                <Flex direction="column" mt={4}>
                     <Text color="gray.400">источник данных</Text>
                     <Text fontWeight="semibold" fontSize='lg'>{source}</Text>
-                </Box>
-                <Box mt={4}>
+                </Flex>
+                <Flex direction="column" mt={4}>
                     <Text color="gray.400">дата создания</Text>
                     <Text fontWeight="semibold" fontSize='lg'>{date}</Text>
-                </Box>
-                <Box mt={4}>
+                </Flex>
+                <Flex direction="column" mt={4}>
                     <Text color="gray.400">время создания</Text>
                     <Text fontWeight="semibold" fontSize='lg'>{time}</Text>
-                </Box>
-            </Box>
+                </Flex>
+            </Flex>
             <AlertDialog
                 isOpen={isOpen}
                 isCentered

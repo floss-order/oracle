@@ -37,46 +37,25 @@ function EditorToggle() {
 function Project({ name, components }) {
   return (
     <>
-      <Editor enabled={false} resolver={{ Stack, Heading, Button, SearchBox, Box, LoadCircle, InfoCard, ULoadCircle, Toolbox, Flex, UInfoCard, UChart, EditorToggle }}>
+      <Editor enabled={false} resolver={{ Stack, Heading, Button, SearchBox, LoadCircle, InfoCard, ULoadCircle, Toolbox, Flex, UInfoCard, UChart, EditorToggle }}>
         <Frame>
           <Element is={Stack} direction="row" overflow="hidden">
             <Element is={Flex} flex={2} direction="column">
               <Element is={Stack} direction="row">
                 <Heading>{name}</Heading>
-                {/* <Button
-                  pos="relative"
-                  top={-2}
-                  zIndex={1}
-                  variant="link">
-                  Изменить
-                </Button> */}
                 <EditorToggle />
               </Element>
               <Element is={Stack}>
                 <SearchBox />
                 <Element is="div" style={{ width: "100%", minHeight: "100px", display: "flex", gap: "8px", flexWrap: "wrap" }} canvas>
-                  {/* <LoadCircle title="баланс региона" load={40} />
-                  <InfoCard title="выбросы парниковых газов (ppm)" value="4000" /> */}
-                  {/* <UChart /> */}
                 </Element>
               </Element>
             </Element>
-                <Element is={Stack} flex={1}>
-                  <Stack pos="fixed">
-                    <Toolbox />
-                  </Stack>
-                </Element>
-            {/*
-              {
-                showEditor && (
-                  <Box flex={1}>
-                    <Box pos="fixed">
-                      <Toolbox />
-                    </Box>
-                  </Box>
-                )
-              }
-            */}
+            <Element is={Stack} flex={1}>
+              <Stack pos="fixed">
+                <Toolbox />
+              </Stack>
+            </Element>
           </Element>
         </Frame>
         {/* <Flex direction="row" gap={4} mt={4}>
