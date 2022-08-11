@@ -4,7 +4,7 @@ import { FiMenu, FiHome, FiMinus, FiBox } from 'react-icons/fi';
 import NavItem from './NavItem';
 
 function Sidebar({ projects }) {
-  const [navSize, changeNavSize] = useState('large');
+  const [navSize, changeNavSize] = useState('small');
   return (
     <Flex
       // pos="sticky"
@@ -39,12 +39,13 @@ function Sidebar({ projects }) {
           active
           to="/"
         />
-        {projects.map(project => (
+        {projects.map((project, index) => (
           <NavItem
             navSize={navSize}
             icon={FiBox}
             title={project.name}
             to={`/${project.slug}`}
+            key={index}
           />
         ))}
       </Flex>
