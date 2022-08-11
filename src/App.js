@@ -1,3 +1,4 @@
+import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import { Routes, Route } from 'react-router-dom';
 import { useQuery } from 'react-query';
