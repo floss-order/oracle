@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Heading, Stack, HStack } from '@chakra-ui/react';
+import { Button, Heading, Stack, HStack, useToast } from '@chakra-ui/react';
 import { FiSave, FiSlash, FiRotateCcw, FiRotateCw } from 'react-icons/fi';
 import { useEditor } from '@craftjs/core';
 import { useEditorNodes } from '../hooks/useEditorNodes';
@@ -9,10 +9,11 @@ function ActionsPanel() {
     enabled: state.options.enabled,
   }));
   const [editorNodes, setEditorNodes] = useState(null);
-  const { json, setJson } = useEditorNodes();
+  const { nodes, setNodes } = useEditorNodes();
+  const toast = useToast();
 
   useEffect(() => {
-    setJson(query.serialize());
+    setEditorNodes(query.serialize());
   }, []);
 
   function disable() {
@@ -24,7 +25,7 @@ function ActionsPanel() {
   }
 
   function onCancel() {
-    setJson(json);
+    setNodes(editorNodes);
     disable();
   }
 

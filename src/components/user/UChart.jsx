@@ -25,12 +25,14 @@ import { transformersDescription } from '../../utils/transformers/transformersDe
 
 // http://192.168.2.201:8001/api/v1/data
 
-function UChart({ dataKeys, chartSettings }) {
+function UChart({ chartData, dataKeys, chartSettings }) {
+  console.log(chartSettings);
   const {
     connectors: { connect, drag },
   } = useNode();
+
   const { isLoading, data, error } = useQuery('devices', () =>
-    fetch('http://localhost:3001/device').then(res => res.json())
+    fetch('http://localhost:3004/device').then(res => res.json())
   );
 
   if (error) {
@@ -42,12 +44,15 @@ function UChart({ dataKeys, chartSettings }) {
   }
 
   return (
-    <Chart
-      data={data}
-      chartSettings={chartSettings}
-      dataKeys={dataKeys}
-      ref={ref => connect(drag(ref))}
-    />
+    <div style={{ width: '100%' }}>
+      {chartSettings && <Heading size="md">{chartSettings.title}</Heading>}
+      <Chart
+        data={Array.isArray(chartData) ? chartData : data}
+        chartSettings={chartSettings}
+        dataKeys={dataKeys}
+        ref={ref => connect(drag(ref))}
+      />
+    </div>
   );
 }
 
@@ -155,6 +160,14 @@ function UChartSettings() {
             <Stack spacing={4}>
               <Box>
                 <Heading size="md">Данные</Heading>
+                <FormControl>
+                  <FormLabel>Заголовок</FormLabel>
+                  <Input
+                    type="text"
+                    placeholder="Введите заголовок графика"
+                    {...register2('title', { required: true })}
+                  />
+                </FormControl>
                 <HStack align="stretch">
                   <FormControl>
                     <FormLabel>Y</FormLabel>
