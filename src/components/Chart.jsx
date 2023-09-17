@@ -1,71 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import {
-//   LineChart,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-//   Legend,
-//   ResponsiveContainer,
-// } from 'recharts';
-// import { epochToDate, maxNumber } from '../utils/transformers';
-// import randomColor from '../utils/randomColor';
-// import { minNumber } from '../utils/transformers/maxNumber';
-
-// const Chart = React.forwardRef(({ data, dataKeys, chartSettings }, ref) => {
-//   const [bottom, setBottom] = useState(650);
-//   const [top, setTop] = useState(0);
-
-//   useEffect(() => {
-//     if (data && chartSettings) {
-//       setBottom(maxNumber(data, chartSettings.datakeysY));
-//     }
-//   }, [bottom, data, chartSettings, ref]);
-
-//   return (
-//     <div style={{ width: '100%', height: 800 }} ref={ref}>
-//       <ResponsiveContainer>
-//         <LineChart
-//           data={data}
-//           margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-//         >
-//           <YAxis
-//             allowDataOverflow
-//             domain={[-100, bottom]}
-//             type="number"
-//             yAxisId="1"
-//           />
-//           <XAxis
-//             dataKey={chartSettings?.datakeyX}
-//             tickFormatter={epoch => epochToDate(epoch)}
-//             fontWeight="600"
-//             minTickGap={40}
-//             allowDataOverflow
-//           />
-//           {chartSettings?.datakeysY.map((dataKey, index) => (
-//             <Line
-//               type="monotone"
-//               dataKey={dataKey}
-//               stroke={randomColor()}
-//               yAxisId="1"
-//               key={index}
-//             />
-//           ))}
-//           <Tooltip
-//             labelFormatter={epoch => epochToDate(epoch, true)}
-//             labelStyle={{ fontWeight: 'bold' }}
-//           />
-//           <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-//           <Legend verticalAlign="bottom" />
-//         </LineChart>
-//       </ResponsiveContainer>
-//     </div>
-//   );
-// });
-
-// export default Chart;
-
 import React, { useState, useEffect } from 'react';
 import {
   LineChart,
@@ -100,7 +32,6 @@ const Chart = React.forwardRef(({ data, dataKeys, chartSettings }, ref) => {
   }, [data, chartSettings]);
 
   useEffect(() => {
-    // Step 4: Filter data based on the selected year, month, and day
     let filteredData = data;
 
     if (selectedYear) {
@@ -128,7 +59,6 @@ const Chart = React.forwardRef(({ data, dataKeys, chartSettings }, ref) => {
     }
   }, [selectedYear, selectedMonth, selectedDay, data, chartSettings]);
 
-  // Step 2: Get unique years from data
   const uniqueYears = Array.isArray(data)
     ? data.reduce((years, entry) => {
         const year = new Date(entry.epoch_time * 1000).getFullYear();
@@ -139,7 +69,6 @@ const Chart = React.forwardRef(({ data, dataKeys, chartSettings }, ref) => {
       }, [])
     : [];
 
-  // Step 3: Get unique months from data
   const uniqueMonths = Array.isArray(data)
     ? data.reduce((months, entry) => {
         const month = new Date(entry.epoch_time * 1000).getMonth();
@@ -150,7 +79,6 @@ const Chart = React.forwardRef(({ data, dataKeys, chartSettings }, ref) => {
       }, [])
     : [];
 
-  // Step 4: Get unique days from data in ascending order
   const uniqueDays = Array.isArray(data)
     ? data
         .map(entry => new Date(entry.epoch_time * 1000).getDate())
@@ -158,23 +86,20 @@ const Chart = React.forwardRef(({ data, dataKeys, chartSettings }, ref) => {
         .sort((a, b) => a - b)
     : [];
 
-  // Step 5: Handle year change
   const handleYearChange = event => {
     setSelectedYear(parseInt(event.target.value, 10));
   };
 
-  // Step 6: Handle month change
   const handleMonthChange = event => {
     setSelectedMonth(parseInt(event.target.value, 10));
   };
 
-  // Step 7: Handle day change
   const handleDayChange = event => {
     setSelectedDay(parseInt(event.target.value, 10));
   };
 
   if (!filteredData) {
-    return null; // or some loading indicator while the data is being filtered
+    return null;
   }
 
   return (
@@ -186,7 +111,6 @@ const Chart = React.forwardRef(({ data, dataKeys, chartSettings }, ref) => {
       }}
       ref={ref}
     >
-      {/* Step 2: Add the select elements for year, month, and day */}
       <Flex gap={5} mb={10}>
         <Flex direction="column">
           <label htmlFor="year-select">Выберите год</label>
