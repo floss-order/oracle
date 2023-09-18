@@ -29,36 +29,33 @@ import { FilePicker } from '../components';
 import { useState } from 'react';
 import { getDeviceIdByName } from '../components/FilePicker';
 import { saveZipFile } from '../utils/saveZipFile';
+import data from './data.json';
+import deviceList from './device-list.json';
 
 function Project({ name }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data, isLoading, error } = useQuery('', () =>
-    fetch('http://192.168.88.162:8000/api/v1/data').then(res => res.json())
-  );
+  // const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { data, isLoading, error } = useQuery('', () =>
+  //   fetch('http://81.200.145.23/api/v1/data').then(res => res.json())
+  // );
+
+  // const {
+  //   data: deviceList,
+  //   isLoading: isDeviceLoading,
+  //   error: errorDeviceList,
+  // } = useQuery('device-list', () =>
+  //   fetch('http://81.200.145.23/api/v1/device-list').then(res => res.json())
+  // );
+
+  // if (isLoading && isDeviceLoading) return 'Loading...';
+  // if (error && errorDeviceList)
+  //   return `An error has occurred: ${error.message || errorDeviceList.message}`;
+
+  // const [currentDevice, setCurrentDevice] = useState(null);
   const toast = useToast();
-
-  const {
-    data: deviceList,
-    isLoading: isDeviceLoading,
-    error: errorDeviceList,
-  } = useQuery('device-list', () =>
-    fetch('http://192.168.88.162:8000/api/v1/device-list').then(res =>
-      res.json()
-    )
-  );
-
-  if (isLoading && isDeviceLoading) return 'Loading...';
-  if (error && errorDeviceList)
-    return `An error has occurred: ${error.message || errorDeviceList.message}`;
-
-  const [currentDevice, setCurrentDevice] = useState(null);
 
   const mutation = useMutation({
     mutationFn: requestOptions => {
-      return fetch(
-        'http://192.168.88.162:8000/api/v1/data/dates',
-        requestOptions
-      );
+      return fetch('http://81.200.145.23/api/v1/data/dates', requestOptions);
     },
     onMutate: variables => {
       toast({
@@ -66,6 +63,7 @@ function Project({ name }) {
         title: 'Загрузка...',
         status: 'loading',
         isClosable: true,
+        duration: 1000 * 60,
       });
     },
     onError: (error, variables, context) => {
@@ -103,21 +101,6 @@ function Project({ name }) {
       ],
     },
     {
-      title: 'Метеостанция Campbell Scientific MesoPRO',
-      datakeyX: 'epoch_time',
-      datakeysY: [
-        'отн. влажность',
-        'точка росы',
-        'атмосферное давление',
-        'скорость ветра',
-        'направление ветра',
-        'приходящая солнечная радиация',
-        'влагосодержание почвы',
-        'электропроводность почвы',
-        'температура почвы',
-      ],
-    },
-    {
       title: 'Почвенный газоанализатор',
       datakeyX: 'epoch_time',
       datakeysY: [
@@ -150,13 +133,27 @@ function Project({ name }) {
         // 'Soil Temperature (degC)',
       ],
     },
+    {
+      title: 'Метеостанция Campbell Scientific MesoPRO',
+      datakeyX: 'epoch_time',
+      datakeysY: [
+        'отн. влажность',
+        'точка росы',
+        'атмосферное давление',
+        'скорость ветра',
+        'направление ветра',
+        'приходящая солнечная радиация',
+        'влагосодержание почвы',
+        'электропроводность почвы',
+        'температура почвы',
+      ],
+    },
   ];
 
   function handleClick(device) {
     // onOpen();
 
     const id = getDeviceIdByName(device, data, deviceList);
-    setCurrentDevice(id);
 
     const formData = new FormData();
     formData.append('deviceId', id);
@@ -464,7 +461,7 @@ function Project({ name }) {
           </Stack>
         </Stack>
       </Flex>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      {/* <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Загрузка...</ModalHeader>
@@ -481,8 +478,8 @@ function Project({ name }) {
               Close
             </Button>
           </ModalFooter> */}
-        </ModalContent>
-      </Modal>
+      {/* </ModalContent> */}
+      {/* </Modal> */}
     </Stack>
   );
 }

@@ -40,13 +40,13 @@ function Sidebar({ projects }) {
               else changeNavSize('small');
             }}
           /> */}
-          <NavItem
+          {/* <NavItem
             navSize={navSize}
             icon={FiHome}
             title="Главная"
             active
             to="/"
-          />
+          /> */}
           {projects.map((project, index) => (
             <NavItem
               navSize={navSize}
