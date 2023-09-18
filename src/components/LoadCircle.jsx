@@ -6,7 +6,6 @@ import {
   Center,
   Heading,
 } from '@chakra-ui/react';
-import { useNode } from '@craftjs/core';
 
 const LoadCircle = React.forwardRef(({ title, load, minW, ...props }, ref) => {
   function changeColor(loadValue) {

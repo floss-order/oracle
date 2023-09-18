@@ -1,43 +1,32 @@
 import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-import { Routes, Route, useLocation } from 'react-router-dom'; // Import useLocation from react-router-dom
-import { useQuery } from 'react-query';
-import Search from './pages/Search';
-import Sidebar from './components/Sidebar';
-import Transaction from './pages/Transaction';
-import Project from './pages/Project';
-import Login from './pages/Login';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { Sidebar } from './components';
+import { Home, Login, Project } from './pages';
 
 function App() {
-  const { isLoading, error, data } = useQuery('projectsList', () =>
-    fetch('http://localhost:3004/projects').then(res => res.json())
-  );
-
-  const location = useLocation(); // Get the current location
-
-  if (isLoading) return 'Loading...';
-  if (error) return `An error has occurred: ${error.message}`;
-
-  const isLoginRoute = location.pathname === '/';
+  const location = useLocation();
+  const isLoginRoute = location.pathname === '/login';
+  const routes = [
+    {
+      name: 'Карбоновый полигон WayCarbon ',
+      path: 'waycarbon',
+    },
+  ];
 
   return (
     <Flex bg="gray.100">
-      {isLoginRoute ? null : <Sidebar projects={data} />}{' '}
-      {/* Render Sidebar only if it's not a Login route */}
+      {isLoginRoute ? null : <Sidebar projects={routes} />}
       <Box w="100vw" h="100vh" overflow="hidden">
         <Box p={8} overflow="scroll" h="100vh">
           <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/search" element={<Search />} />
-            <Route
-              path="/transactions/:transaction"
-              element={<Transaction />}
-            />
-            {data.map((project, index) => (
+            <Route path="/login" element={<Login />} />
+            {/* <Route path="/" element={<Home />} /> */}
+            {routes.map((route, index) => (
               <Route
                 key={index}
-                path={`/${project.slug}`}
-                element={<Project name={project.name} />}
+                path={route.path}
+                element={<Project name={route.name} />}
               />
             ))}
           </Routes>
