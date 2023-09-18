@@ -5,3 +5,4 @@ export { default as LoadCircle } from './LoadCircle';
 export { default as NavItem } from './NavItem';
 export { default as SearchBox } from './SearchBox';
 export { default as Sidebar } from './Sidebar';
+export { default as FilePicker } from './FilePicker';

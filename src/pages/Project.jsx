@@ -10,69 +10,90 @@ import {
   CardHeader,
   CardBody,
   Highlight,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure,
+  Progress,
+  useToast,
 } from '@chakra-ui/react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import Chart from '../components/Chart';
 import { YMaps, Map, Placemark, Polyline } from '@pbe/react-yandex-maps';
+import { FilePicker } from '../components';
+import { useState } from 'react';
+import { getDeviceIdByName } from '../components/FilePicker';
+import { saveZipFile } from '../utils/saveZipFile';
 
-function Project({ name, components }) {
+function Project({ name }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, isLoading, error } = useQuery('', () =>
-    fetch('http://81.200.145.23/api/v1/data').then(res => res.json())
+    fetch('http://192.168.88.162:8000/api/v1/data').then(res => res.json())
+  );
+  const toast = useToast();
+
+  const {
+    data: deviceList,
+    isLoading: isDeviceLoading,
+    error: errorDeviceList,
+  } = useQuery('device-list', () =>
+    fetch('http://192.168.88.162:8000/api/v1/device-list').then(res =>
+      res.json()
+    )
   );
 
-  if (isLoading) return 'Loading...';
-  if (error) return `An error has occurred: ${error.message}`;
+  if (isLoading && isDeviceLoading) return 'Loading...';
+  if (error && errorDeviceList)
+    return `An error has occurred: ${error.message || errorDeviceList.message}`;
+
+  const [currentDevice, setCurrentDevice] = useState(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn: requestOptions => {
+      return fetch(
+        'http://192.168.88.162:8000/api/v1/data/dates',
+        requestOptions
+      );
+    },
+    onMutate: variables => {
+      toast({
+        id: 'loading',
+        title: 'Загрузка...',
+        status: 'loading',
+        isClosable: true,
+      });
+    },
+    onError: (error, variables, context) => {
+      toast({
+        title: 'Произошла ошибка. Повторите позже.',
+        status: 'error',
+        isClosable: true,
+      });
+    },
+    onSuccess: async (data, variables, context) => {
+      const responseBlob = await data.blob();
+      saveZipFile(responseBlob, 'data.zip');
+      toast.close('loading');
+
+      toast({
+        title: 'Файл успешно загружен.',
+        status: 'success',
+        isClosable: true,
+      });
+    },
+    onSettled: () => {},
+  });
 
   const chartSettings = [
+    { title: 'test', datakeyX: 'epoch_time', datakeysY: [] },
     {
-      title: ' ',
-      datakeyX: 'epoch_time',
-      datakeysY: [
-        // 'cavitypressure',
-        // 'cavitytemp',
-        // 'dastemp',
-        // 'etalontemp',
-        // 'warmboxtemp',
-        // 'species',
-        // 'n2o',
-        // 'co2',
-        // 'ch4',
-        // 'h2o',
-        // 'nh3',
-        'Mean CO2 (ppm)',
-        'Mean CH4 (ppm)',
-        'Mean N2O (ppm)',
-        'Mean NH3 (ppm)',
-        'Mean H2O (percent)',
-        'Cav. Pressure (kPa)',
-        'Cav. Temperature (K)',
-        'Water Content (fraction)',
-        'Chmbr. Temperature (K)',
-        'Chmbr. Pressure (kPa)',
-        'Flux CO2 (E) (umol/m^2/s)',
-        'Flux CH4 (E) (nmol/m^2/s)',
-        'Flux N2O (E) (nmol/m^2/s)',
-        'Flux NH3 (E) (umol/m^2/s)',
-        'Soil VWC (%)',
-        'Soil Temperature (degC)',
-      ],
-    },
-    {
-      title: ' ',
-      datakeyX: 'epoch_time',
-      datakeysY: [
-        'Точка росы',
-        'Атмосферное давление',
-        'Скорость ветра',
-        'Направление ветра',
-        'Приходящая солнечная радиация',
-        'Влагосодержание почвы',
-        'Электропроводность почвы',
-        'Температура почвы',
-      ],
-    },
-    {
-      title: ' ',
+      title: 'Li-Cor Eddy Covariance',
       datakeyX: 'epoch_time',
       datakeysY: [
         'co2_flux',
@@ -82,7 +103,75 @@ function Project({ name, components }) {
         'wind_speed',
       ],
     },
+    {
+      title: 'Метеостанция Campbell Scientific MesoPRO',
+      datakeyX: 'epoch_time',
+      datakeysY: [
+        'отн. влажность',
+        'точка росы',
+        'атмосферное давление',
+        'скорость ветра',
+        'направление ветра',
+        'приходящая солнечная радиация',
+        'влагосодержание почвы',
+        'электропроводность почвы',
+        'температура почвы',
+      ],
+    },
+    {
+      title: 'Почвенный газоанализатор',
+      datakeyX: 'epoch_time',
+      datakeysY: [
+        'cavitypressure',
+        'cavitytemp',
+        'dastemp',
+        'etalontemp',
+        'warmboxtemp',
+        'species',
+        'n2o',
+        'co2',
+        'ch4',
+        'h2o',
+        'nh3',
+        // 'Mean CO2 (ppm)',
+        // 'Mean CH4 (ppm)',
+        // 'Mean N2O (ppm)',
+        // 'Mean NH3 (ppm)',
+        // 'Mean H2O (percent)',
+        // 'Cav. Pressure (kPa)',
+        // 'Cav. Temperature (K)',
+        // 'Water Content (fraction)',
+        // 'Chmbr. Temperature (K)',
+        // 'Chmbr. Pressure (kPa)',
+        // 'Flux CO2 (E) (umol/m^2/s)',
+        // 'Flux CH4 (E) (nmol/m^2/s)',
+        // 'Flux N2O (E) (nmol/m^2/s)',
+        // 'Flux NH3 (E) (umol/m^2/s)',
+        // 'Soil VWC (%)',
+        // 'Soil Temperature (degC)',
+      ],
+    },
   ];
+
+  function handleClick(device) {
+    // onOpen();
+
+    const id = getDeviceIdByName(device, data, deviceList);
+    setCurrentDevice(id);
+
+    const formData = new FormData();
+    formData.append('deviceId', id);
+    formData.append('fromDate', '01/01/2021');
+    formData.append('toDate', '31/12/2023');
+
+    const requestOptions = {
+      method: 'POST',
+      body: formData,
+      redirect: 'follow',
+    };
+
+    mutation.mutate(requestOptions);
+  }
 
   return (
     <Stack direction="row" overflow="hidden">
@@ -346,12 +435,28 @@ function Project({ name, components }) {
             </Stack>
             {Object.keys(data).map((device, index) => (
               <Stack key={index}>
-                <Heading size="md">{device}</Heading>
+                <Heading size="md">{chartSettings[index].title}</Heading>
+
                 {Array.isArray(data[device]) && data[device].length > 0 ? (
-                  <Chart
-                    data={data[device]}
-                    chartSettings={chartSettings[index]}
-                  />
+                  <>
+                    <Button
+                      colorScheme="teal"
+                      onClick={() => handleClick(device)}
+                      // position="relative"
+                      // top={-10}
+                      pos="relative"
+                      top={10}
+                      left={-240}
+                      zIndex={1}
+                      variant="link"
+                    >
+                      Скачать
+                    </Button>
+                    <Chart
+                      data={data[device]}
+                      chartSettings={chartSettings[index]}
+                    />
+                  </>
                 ) : (
                   <Text>Нет данных</Text>
                 )}
@@ -360,6 +465,25 @@ function Project({ name, components }) {
           </Stack>
         </Stack>
       </Flex>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Загрузка...</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FilePicker
+              data={data}
+              deviceList={deviceList}
+              currentDevice={currentDevice}
+            />
+          </ModalBody>
+          {/* <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter> */}
+        </ModalContent>
+      </Modal>
     </Stack>
   );
 }

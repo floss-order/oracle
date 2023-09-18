@@ -15,14 +15,12 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const { toggleColorMode } = useColorMode();
   const formBackground = useColorModeValue('white', 'gray.700');
   const navigate = useNavigate();
 
   function handleSubmit(event) {
-    console.log(event);
     event.preventDefault();
-    navigate('/carbon', {
+    navigate('/waycarbon', {
       replace: false,
     });
   }
