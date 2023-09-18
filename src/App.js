@@ -16,12 +16,12 @@ function App() {
 
   return (
     <Flex bg="gray.100">
-      {isLoginRoute ? null : <Sidebar projects={routes} />}{' '}
+      {isLoginRoute ? null : <Sidebar projects={routes} />}
       <Box w="100vw" h="100vh" overflow="hidden">
         <Box p={8} overflow="scroll" h="100vh">
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Home />} />
+            {/* <Route path="/" element={<Home />} /> */}
             {routes.map((route, index) => (
               <Route
                 key={index}

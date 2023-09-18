@@ -52,7 +52,6 @@ function Project({ name }) {
     return `An error has occurred: ${error.message || errorDeviceList.message}`;
 
   const [currentDevice, setCurrentDevice] = useState(null);
-  const [isDownloading, setIsDownloading] = useState(false);
 
   const mutation = useMutation({
     mutationFn: requestOptions => {
