@@ -10,7 +10,7 @@ function App() {
   const routes = [
     {
       name: 'Карбоновый полигон WayCarbon ',
-      path: 'waycarbon',
+      path: '/',
     },
   ];
 
