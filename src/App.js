@@ -10,7 +10,7 @@ function App() {
   const routes = [
     {
       name: 'Карбоновый полигон WayCarbon ',
-      path: '/',
+      path: 'waycarbon',
     },
   ];
 
@@ -20,8 +20,7 @@ function App() {
       <Box w="100vw" h="100vh" overflow="hidden">
         <Box p={8} overflow="scroll" h="100vh">
           <Routes>
-            <Route path="/login" element={<Login />} />
-            {/* <Route path="/" element={<Home />} /> */}
+            <Route path="/" element={<Home />} />
             {routes.map((route, index) => (
               <Route
                 key={index}

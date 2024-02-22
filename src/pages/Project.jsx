@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Flex,
   Heading,
@@ -31,61 +31,98 @@ import { getDeviceIdByName } from '../components/FilePicker';
 import { saveZipFile } from '../utils/saveZipFile';
 import data from './data.json';
 import deviceList from './device-list.json';
+import MapWrapper from '../components/MapWrapper';
+
+const apiURL = process.env.REACT_APP_API_URL;
+console.log(apiURL);
+
+const fetchData = async url => {
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 function Project({ name }) {
   // const { isOpen, onOpen, onClose } = useDisclosure();
-  // const { data, isLoading, error } = useQuery('', () =>
-  //   fetch('http://81.200.145.23/api/v1/data').then(res => res.json())
-  // );
 
-  // const {
-  //   data: deviceList,
-  //   isLoading: isDeviceLoading,
-  //   error: errorDeviceList,
-  // } = useQuery('device-list', () =>
-  //   fetch('http://81.200.145.23/api/v1/device-list').then(res => res.json())
-  // );
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // if (isLoading && isDeviceLoading) return 'Loading...';
-  // if (error && errorDeviceList)
-  //   return `An error has occurred: ${error.message || errorDeviceList.message}`;
+  const [deviceList, setDeviceList] = useState(null);
+  const [isDeviceLoading, setIsDeviceLoading] = useState(true);
+  const [errorDeviceList, setErrorDeviceList] = useState(null);
+
+  useEffect(() => {
+    const fetchDataAndDeviceList = async () => {
+      try {
+        const [dataResult, deviceListResult] = await Promise.all([
+          fetchData(`${apiURL}/data`),
+          fetchData(`${apiURL}/device-list`),
+        ]);
+
+        setData(dataResult);
+        setIsLoading(false);
+
+        setDeviceList(deviceListResult);
+        setIsDeviceLoading(false);
+      } catch (error) {
+        setError(error);
+        setErrorDeviceList(error);
+        setIsLoading(false);
+        setIsDeviceLoading(false);
+      }
+    };
+
+    fetchDataAndDeviceList();
+  }, []);
+
+  if (isLoading || isDeviceLoading) return 'Loading...';
+  if (error || errorDeviceList)
+    return `An error has occurred: ${
+      error?.message || errorDeviceList?.message
+    }`;
 
   // const [currentDevice, setCurrentDevice] = useState(null);
-  const toast = useToast();
+  // const toast = useToast();
 
-  const mutation = useMutation({
-    mutationFn: requestOptions => {
-      return fetch('http://81.200.145.23/api/v1/data/dates', requestOptions);
-    },
-    onMutate: variables => {
-      toast({
-        id: 'loading',
-        title: 'Загрузка...',
-        status: 'loading',
-        isClosable: true,
-        duration: 1000 * 60,
-      });
-    },
-    onError: (error, variables, context) => {
-      toast({
-        title: 'Произошла ошибка. Повторите позже.',
-        status: 'error',
-        isClosable: true,
-      });
-    },
-    onSuccess: async (data, variables, context) => {
-      const responseBlob = await data.blob();
-      saveZipFile(responseBlob, 'data.zip');
-      toast.close('loading');
+  // const mutation = useMutation({
+  //   mutationFn: requestOptions => {
+  //     return fetch('http://81.200.145.23/api/v1/data/dates', requestOptions);
+  //   },
+  //   onMutate: variables => {
+  //     toast({
+  //       id: 'loading',
+  //       title: 'Загрузка...',
+  //       status: 'loading',
+  //       isClosable: true,
+  //       duration: 1000 * 60,
+  //     });
+  //   },
+  //   onError: (error, variables, context) => {
+  //     toast({
+  //       title: 'Произошла ошибка. Повторите позже.',
+  //       status: 'error',
+  //       isClosable: true,
+  //     });
+  //   },
+  //   onSuccess: async (data, variables, context) => {
+  //     const responseBlob = await data.blob();
+  //     saveZipFile(responseBlob, 'data.zip');
+  //     toast.close('loading');
 
-      toast({
-        title: 'Файл успешно загружен.',
-        status: 'success',
-        isClosable: true,
-      });
-    },
-    onSettled: () => {},
-  });
+  //     toast({
+  //       title: 'Файл успешно загружен.',
+  //       status: 'success',
+  //       isClosable: true,
+  //     });
+  //   },
+  //   onSettled: () => {},
+  // });
 
   const chartSettings = [
     { title: 'test', datakeyX: 'epoch_time', datakeysY: [] },
@@ -150,24 +187,34 @@ function Project({ name }) {
     },
   ];
 
-  function handleClick(device) {
-    // onOpen();
+  // function handleClick(device) {
+  //   // onOpen();
 
-    const id = getDeviceIdByName(device, data, deviceList);
+  //   const id = getDeviceIdByName(device, data, deviceList);
 
-    const formData = new FormData();
-    formData.append('deviceId', id);
-    formData.append('fromDate', '01/01/2021');
-    formData.append('toDate', '31/12/2023');
+  //   const formData = new FormData();
+  //   formData.append('deviceId', id);
+  //   formData.append('fromDate', '01/01/2021');
+  //   formData.append('toDate', '31/12/2023');
 
-    const requestOptions = {
-      method: 'POST',
-      body: formData,
-      redirect: 'follow',
-    };
+  //   const requestOptions = {
+  //     method: 'POST',
+  //     body: formData,
+  //     redirect: 'follow',
+  //   };
 
-    mutation.mutate(requestOptions);
-  }
+  //   mutation.mutate(requestOptions);
+  // }
+
+  const getDatakeysY = arr => {
+    const measurements = Object.keys(arr);
+    measurements.splice(measurements.indexOf('epoch_time'), 1);
+    measurements.splice(measurements.indexOf('datetime'), 1);
+
+    console.log(measurements);
+
+    return measurements;
+  };
 
   return (
     <Stack direction="row" overflow="hidden">
@@ -203,7 +250,7 @@ function Project({ name }) {
             </Stack>
             <Stack>
               <Heading size="md">Местоположение</Heading>
-              <div
+              {/* <div
                 style={{
                   position: 'relative',
                   overflow: 'hidden',
@@ -241,6 +288,16 @@ function Project({ name }) {
                   allowFullScreen="true"
                   style={{ position: 'relative' }}
                 ></iframe>
+              </div> */}
+              <div
+                style={{
+                  width: '100%',
+                  height: 400,
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                <MapWrapper />
               </div>
             </Stack>
             <Stack spacing={4}>
@@ -431,11 +488,10 @@ function Project({ name }) {
             </Stack>
             {Object.keys(data).map((device, index) => (
               <Stack key={index}>
-                <Heading size="md">{chartSettings[index].title}</Heading>
-
+                <Heading size="md">{device}</Heading>
                 {Array.isArray(data[device]) && data[device].length > 0 ? (
                   <>
-                    <Button
+                    {/* <Button
                       colorScheme="teal"
                       onClick={() => handleClick(device)}
                       // position="relative"
@@ -447,10 +503,14 @@ function Project({ name }) {
                       variant="link"
                     >
                       Скачать
-                    </Button>
+                    </Button> */}
                     <Chart
                       data={data[device]}
-                      chartSettings={chartSettings[index]}
+                      chartSettings={{
+                        title: device,
+                        datakeyX: 'epoch_time',
+                        datakeysY: getDatakeysY(data[device][0]),
+                      }}
                     />
                   </>
                 ) : (

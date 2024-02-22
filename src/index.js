@@ -1,6 +1,5 @@
 import React from 'react';
-// import ReactDOM from 'react-dom/client';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import './index.css';
 import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -15,15 +14,12 @@ const queryClient = new QueryClient({
   },
 });
 
-ReactDOM.render(
-  // <React.StrictMode>
+ReactDOM.createRoot(document.getElementById('root')).render(
   <Router>
     <QueryClientProvider client={queryClient}>
       <ChakraProvider>
         <App />
       </ChakraProvider>
     </QueryClientProvider>
-  </Router>,
-  // </React.StrictMode>,
-  document.getElementById('root')
+  </Router>
 );
